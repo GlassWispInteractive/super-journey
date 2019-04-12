@@ -1,0 +1,13 @@
+.editorconfig
+.git*
+.jscsrc
+.jsdocconf
+.jshintignore
+.jshintrc
+.circleci
+.c9
+external.jsdoc
+example/
+docs/
+jsdoc/
+test/
