@@ -6,44 +6,87 @@ class StageSkydive extends Phaser.Scene {
   }
 
   init(data) {
-    console.log('data: ' + JSON.stringify(data));
-  }
+    SubMode = {
+      InFlight: 1,
+      Landing: 2,
+      Landed: 3,
+    };
 
-  preload() {
-    this.load.image('zielscheibe', require('./assets/zielscheibe.jpg'));
-    this.load.image('dude', require('./assets/dude.png'));
-  }
+    this.DEBUG = false;
 
-  create() {
-    this.DEBUG = true;
+    this.submode = SubMode.InFlight;
 
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    this.add.text(400, 10, 'StageSkydive').setOrigin(0.5, 0);
-
-    this.base = new Phaser.Geom.Point(400, 300);
+    this.playerspeed = 2;
+    this.base = new Phaser.Geom.Point(600, 300);
     this.goal = new Phaser.Geom.Point(
       Phaser.Math.RND.integerInRange(this.base.x - 200, this.base.x + 200),
       Phaser.Math.RND.integerInRange(this.base.y - 200, this.base.y + 200)
     );
-    this.wiggle = 0;
+    this.wiggle = 3;
+    this.circle = new Phaser.Geom.Circle(600, 300, 250);
+  }
+
+  preload() {
+    this.load.image('zielscheibe', require('./assets/zielscheibe.jpg'));
+    this.load.image('dart', require('./assets/dart.png'));
+
+    this.load.spritesheet(
+      'bigexplosion',
+      require('./assets/bigexplosion.png'),
+      {
+        frameWidth: 108,
+        frameHeight: 121,
+        endFrame: 24,
+      }
+    );
+    this.load.audio('explosionsound', require('./assets/explosion.mp3'));
+  }
+
+  create() {
+    this.add.text(600, 10, 'StageSkydive').setOrigin(0.5, 0);
+
     this.zielscheibe = this.add.image(this.base.x, this.base.y, 'zielscheibe');
 
-    // this.pos = new Phaser.Geom.Point(400, 300); // Phaser.Geom.Point.Clone(this.base);
-    playerspeed = 2;
-    this.player = this.add.image(this.base.x, this.base.y, 'dude');
+    // this.pos = new Phaser.Geom.Point(600, 300); // Phaser.Geom.Point.Clone(this.base);
+    this.dart = this.add.image(this.base.x, this.base.y, 'dart');
 
-    this.circle = new Phaser.Geom.Circle(400, 300, 250);
     this.circle_graphics = this.add.graphics(); // graphics object for drawing the circle
     if (this.DEBUG) {
       this.goal_graphics = this.add.graphics();
     }
     this.inter = 0;
+
+    this.anims.create({
+      key: 'boom',
+      frames: this.anims.generateFrameNumbers('bigexplosion', {
+        start: 0,
+        end: 24,
+      }),
+      frameRate: 20,
+    });
   }
 
   update(time) {
+    switch (this.submode) {
+      case SubMode.InFlight:
+        this.updateInFlight(time);
+        break;
+      case SubMode.Landing:
+        this.updateLanding(time);
+        break;
+      case SubMode.Landed:
+        this.updateLanded(time);
+        break;
+    }
+  }
+
+  updateInFlight(time) {
     if (this.inter < 1) {
       this.inter += 0.007;
+    } else {
+      this.submode = SubMode.Landing;
     }
 
     // wiggle zielscheibe
@@ -52,7 +95,7 @@ class StageSkydive extends Phaser.Scene {
     this.zielscheibe.y =
       this.base.y + Phaser.Math.RND.integerInRange(-this.wiggle, this.wiggle);
 
-    // circle x and y: linear interpolation from 400,300 (middle) to this.goal
+    // circle x and y: linear interpolation from 600,300 (middle) to this.goal
     this.circle.x = Phaser.Math.Interpolation.Bezier(
       [this.base.x, this.goal.x],
       this.inter
@@ -77,17 +120,44 @@ class StageSkydive extends Phaser.Scene {
 
     // player movement
     if (this.cursors.left.isDown) {
-      this.player.x -= playerspeed;
+      this.dart.x -= this.playerspeed;
     }
     if (this.cursors.right.isDown) {
-      this.player.x += playerspeed;
+      this.dart.x += this.playerspeed;
     }
     if (this.cursors.up.isDown) {
-      this.player.y -= playerspeed;
+      this.dart.y -= this.playerspeed;
     }
     if (this.cursors.down.isDown) {
-      this.player.y += playerspeed;
+      this.dart.y += this.playerspeed;
     }
+  }
+
+  updateLanding(time) {
+    this.dart.destroy();
+
+    var boom = this.add.sprite(this.dart.x, this.dart.y, 'bigexplosion');
+    boom.anims.play('boom');
+    this.sound.play('explosionsound');
+
+    var dist = Phaser.Math.Distance.Between(
+      this.dart.x,
+      this.dart.y,
+      this.goal.x,
+      this.goal.y
+    );
+    console.log('dist:' + dist);
+
+    // minimum multiplier: 1 (at >=100 pixel distance); best multi: 4
+    this.multi = 1 + Math.min(3, 3 - Math.min(3, dist / 33.3));
+    this.multi = Math.round(this.multi * 100) / 100; // round to two decimal places
+    console.log('multiplier:' + this.multi);
+
+    this.submode = SubMode.Landed;
+  }
+
+  updateLanded(time) {
+    // TODO: switch stage (or display highscore here) and pass this.multi as the result of this minigame
   }
 }
 
