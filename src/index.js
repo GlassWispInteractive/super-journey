@@ -7,8 +7,15 @@ const gameOver = require('./gameOver');
 
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1200,
+  height: 800,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 600 },
+      debug: false,
+    },
+  },
   backgroundColor: '#000000',
   parent: 'phaser-example',
   scene: [menu, stagePacman, stageMario, stageSkydive, gameOver],
