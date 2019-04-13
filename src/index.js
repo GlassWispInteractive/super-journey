@@ -1,31 +1,17 @@
-import Phaser from 'phaser';
+const Phaser = require('phaser');
+const menu = require('./menu');
+const stagePacman = require('./stagePacman');
+const stageMario = require('./stageMario');
+const stageSkydive = require('./stageSkydive');
+const gameOver = require('./gameOver');
 
-const config = {
+var config = {
   type: Phaser.AUTO,
-  parent: 'phaser-example',
   width: 800,
   height: 600,
-  scene: {
-    preload,
-    create,
-  },
+  backgroundColor: '#000000',
+  parent: 'phaser-example',
+  scene: [menu, stagePacman, stageMario, stageSkydive, gameOver],
 };
 
-const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image('logo', require('./assets/logo.png'));
-}
-
-function create() {
-  const logo = this.add.image(400, 150, 'logo');
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: 'Power2',
-    yoyo: true,
-    loop: -1,
-  });
-}
+var game = new Phaser.Game(config);

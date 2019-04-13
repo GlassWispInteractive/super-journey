@@ -26,6 +26,12 @@ module.exports = {
     ],
   },
   plugins: [
+    // TODO: find out if there is any good reason to remove dist folder during local running
+    /*
+    new CleanWebpackPlugin(["dist"], {
+      root: path.resolve(__dirname, "../")
+    }),
+    */
     new webpack.DefinePlugin({
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true),

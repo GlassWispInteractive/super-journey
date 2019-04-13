@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const initCells = require('../src/maze');
 
 describe('initCells', () => {
