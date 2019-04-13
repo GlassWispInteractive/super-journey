@@ -149,7 +149,10 @@ class StageSkydive extends Phaser.Scene {
     console.log('dist:' + dist);
 
     // minimum multiplier: 1 (at >=100 pixel distance); best multi: 4
-    this.multi = 1 + Math.min(3, 3 - Math.min(3, dist / 33.3));
+    minmult = 0.5; // minimal multiplier
+    maxvar = 3.5; // maximum variable part
+    this.multi =
+      minmult + Math.min(maxvar, maxvar - Math.min(maxvar, dist / 33.3));
     this.multi = Math.round(this.multi * 100) / 100; // round to two decimal places
     console.log('multiplier:' + this.multi);
 
