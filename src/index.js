@@ -6,12 +6,19 @@ const stageSkydive = require('./stageSkydive');
 const gameOver = require('./gameOver');
 const credits = require('./credits');
 
-var config = {
+const config = {
   type: Phaser.AUTO,
   width: 1200,
   height: 600,
   backgroundColor: '#000000',
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 600 },
+      debug: false,
+    },
+  },
   scene: [menu, stagePacman, stageMario, stageSkydive, gameOver, credits],
 };
 
-var game = new Phaser.Game(config);
+new Phaser.Game(config);
