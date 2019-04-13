@@ -1,3 +1,7 @@
+const COLOR_B = '#ded1fc';
+
+const niceText = require('./util/niceText');
+
 class Menu extends Phaser.Scene {
   constructor() {
     super({
@@ -18,43 +22,26 @@ class Menu extends Phaser.Scene {
     const menu = ['Start game', 'Load', 'Music On', 'Sound On', 'Credit'];
     let entries = Array(menu.length);
 
-    this.add
-      .text(600, 100, 'Super Journey', {
-        fontFamily: 'Arial Black',
-        fontSize: 74,
-        color: '#c51b7d',
-        align: 'center',
-      })
-      .setStroke('#de77ae', 16)
-      .setAlpha(0.85)
-      .setOrigin(0.5);
+    niceText(this, 'Super Journey', 600, 100, 74);
 
     for (let i = 0; i < menu.length; i++) {
-      entries[i] = this.add
-        .text(600, 250 + i * 50, menu[i], {
-          fontFamily: 'Arial Black',
-          fontSize: 36,
-          color: '#c51b7d',
-          align: 'center',
-        })
-        .setAlpha(0.85)
-        .setOrigin(0.5);
+      entries[i] = niceText(this, menu[i], 600, 250 + i * 50, 36);
 
-      if (i == menuSelected) {
-        entries[i].setStroke('#de77ae', 8);
+      if (i !== menuSelected) {
+        entries[i].setStroke(COLOR_B, 0);
       }
     }
 
     this.input.keyboard.on('keydown-DOWN', () => {
       menuSelected = (menuSelected + 1) % menu.length;
       entries.forEach(entry => entry.setStroke('', 0));
-      entries[menuSelected].setStroke('#de77ae', 8);
+      entries[menuSelected].setStroke(COLOR_B, 8);
     });
 
     this.input.keyboard.on('keydown-UP', () => {
-      menuSelected = (menuSelected - 1) % menu.length;
+      menuSelected = (menuSelected + menu.length - 1) % menu.length;
       entries.forEach(entry => entry.setStroke('', 0));
-      entries[menuSelected].setStroke('#de77ae', 8);
+      entries[menuSelected].setStroke(COLOR_B, 8);
     });
 
     this.input.keyboard.on('keydown-SPACE', () => {

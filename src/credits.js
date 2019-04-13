@@ -1,3 +1,5 @@
+const niceText = require('./util/niceText');
+
 class Credits extends Phaser.Scene {
   constructor() {
     super({
@@ -12,30 +14,12 @@ class Credits extends Phaser.Scene {
   preload() {}
 
   create() {
-    const programmers = ['Danny', 'Justin', 'Alex', 'Lenny'];
+    const programmers = ['Alex', 'Danny', 'Justin', 'Lenny'];
 
-    this.add
-      .text(600, 100, 'Credits to', {
-        fontFamily: 'Arial Black',
-        fontSize: 74,
-        color: '#c51b7d',
-        align: 'center',
-      })
-      .setAlpha(0.85)
-      .setOrigin(0.5)
-      .setStroke('#de77ae', 16);
+    niceText(this, 'Credits to', 600, 100, 74);
 
     for (let i = 0; i < programmers.length; i++) {
-      this.add
-        .text(600, 250 + i * 50, programmers[i], {
-          fontFamily: 'Arial Black',
-          fontSize: 36,
-          color: '#c51b7d',
-          align: 'center',
-        })
-        .setAlpha(0.85)
-        .setOrigin(0.5)
-        .setStroke('#de77ae', 8);
+      niceText(this, programmers[i], 600, 250 + i * 50, 36);
     }
 
     this.input.keyboard.on('keydown-SPACE', () => {

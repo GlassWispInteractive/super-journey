@@ -14,12 +14,12 @@ class StageMario extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('sky', 'src/assets/himmel.png');
-    this.load.image('platform', 'src/assets/platform_choc.png');
-    this.load.image('ground', 'src/assets/browni_boden.png');
-    this.load.image('bacon', 'src/assets/bacon.png');
-    this.load.image('burger', 'src/assets/burger.png');
-    this.load.spritesheet('dude', 'src/assets/assassin_run.png', {
+    this.load.image('sky', require('./assets/himmel.png'));
+    this.load.image('platform', require('./assets/platform_choc.png'));
+    this.load.image('ground', require('./assets/browni_boden.png'));
+    this.load.image('bacon', require('./assets/bacon.png'));
+    this.load.image('burger', require('./assets/burger.png'));
+    this.load.spritesheet('dude', require('./assets/assassin_run.png'), {
       frameWidth: 150,
       frameHeight: 140,
     });
